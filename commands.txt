@@ -79,4 +79,6 @@ If error occurs, open Command Prompt and run following commands in C:\Program Fi
 - git config --global user.email "inderjotsingh27@gmail.com"
 - git config --global user.name "Inderjot Singh"
 
+In github website, create new repository. You can either make it public or private.
+
 
