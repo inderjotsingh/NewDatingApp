@@ -81,4 +81,8 @@ If error occurs, open Command Prompt and run following commands in C:\Program Fi
 
 In github website, create new repository. You can either make it public or private.
 
+execute following command (received from github website):
+- git remote add origin https://github.com/inderjotsingh/NewDatingApp.git
+- git push -u origin main  (It will ask for authorization)
 
+-----------------------------------------------ANGULAR------------------------------------------------
