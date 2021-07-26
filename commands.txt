@@ -1,0 +1,82 @@
+dotnet new sln
+dotnet new webapi –o API
+dotnet sln add API
+
+Open VS Code
+
+cd API
+dotnet run / dotnet watch run (like nodemon)
+
+Create new folder "Entities" and create class AppUser
+
+DbContext: Acts as a bridge between domain and database. 
+Primary class to interact with database.
+
+Entity Framework features:
+- Querying through Linq
+- Change Tracking
+- Saving to database
+- Concurrency
+- Transactions
+- Caching  (Repeated query will fetch data from Cache and not from database)
+- Build In Concentions
+- Configurations
+- Migrations
+
+Install Nuget Galery from Extensions
+
+Ctrl + Shift + P: Open Commands: Search Nuget Gallery
+In Nuget Gallery, seach Microsoft.EntityFrameworkCore.sqlite. choose your .net code version and tick on checkbox and install.
+You can choose sql server also if you are using sql server.
+Check API.csproj
+
+Adding DbContext File:
+Create folder Data.
+Create DataContext.cs file
+
+Create contructor.
+create property of type DbSet<AppUser> along with name of table 
+
+In Startup.cs file, under ConfigureServices, Add DbContext and provide connection string
+
+Creating Connection String:
+In appsettings.Development.json, enter your connection string and give the name of connection string (DefaultConnection) in startup.js file
+
+in DatingApp->API folder, write following command to introduct Migrations
+- dotnet ef migrations add InitialCreate -o Data/Migrations
+
+In error occurs regarding Microsoft.EntityFrameworkCore.Design package...install this package from Nuget Gallery as mentioned above.
+
+A new folder Migrations in Data folder has been created with 2 methods: Up and Down
+
+To create the database, write following command in API folder:
+- dotnet ef database update
+
+Check database. 2 tables are created in DateingApp database: __EFMigrationsHistory and Users
+
+----------------------
+Adding new Controller:
+----------------------
+In controller folder, create new class named UsersController.cs and derive ControllerBase class
+Using Linq we can fetch data from Database and use postman to check our api. 
+
+--------
+GIT
+--------
+- Install Git in your system and sign up for GitHub
+- Open Git Bash.
+- Run following command to initialize git in your project
+    - git init (A new hidden folder in created in your project)
+    - dotnet new gitignore  (Ignore files from posting to git hub)
+
+In .gitignore file, at the end, make an entry for "appsettings.json". As this file contains keys, git will not post this file to github.
+
+Open Source Control (Ctrl + Shift + G).
+Click on "+" sign. Enter remarks above.
+Click on "..."->Commit->Commit
+
+If error occurs, open Command Prompt and run following commands in C:\Program Files\Git\bin:
+- git config --global user.email "inderjotsingh27@gmail.com"
+- git config --global user.name "Inderjot Singh"
+
+
