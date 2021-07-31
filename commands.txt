@@ -86,3 +86,6 @@ execute following command (received from github website):
 - git push -u origin main  (It will ask for authorization)
 
 -----------------------------------------------ANGULAR------------------------------------------------
+Install latest version of angular CLI using following command:
+- npm i -g @angular/cli
+- ng new client (To create a new angular project)
