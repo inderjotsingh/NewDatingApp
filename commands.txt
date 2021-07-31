@@ -89,3 +89,7 @@ execute following command (received from github website):
 Install latest version of angular CLI using following command:
 - npm i -g @angular/cli
 - ng new client (To create a new angular project)
+
+Structure Directives: (Eg: *ngFor): Modifies the domain objects model (DOMs) in HTML
+Install Angular Bootstrap using following command:
+- ng add ngx-bootstrap
