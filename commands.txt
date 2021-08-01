@@ -93,3 +93,8 @@ Install latest version of angular CLI using following command:
 Structure Directives: (Eg: *ngFor): Modifies the domain objects model (DOMs) in HTML
 Install Angular Bootstrap using following command:
 - ng add ngx-bootstrap
+
+Install Font-Awesome using following commmand:
+- npm install font-awesome
+
+Using HTTPS in Angular
