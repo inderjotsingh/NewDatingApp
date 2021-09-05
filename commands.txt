@@ -6,6 +6,7 @@ Open VS Code
 
 cd API
 dotnet run / dotnet watch run (like nodemon)
+dotnet dev-certs https --trust
 
 Create new folder "Entities" and create class AppUser
 
@@ -98,3 +99,90 @@ Install Font-Awesome using following commmand:
 - npm install font-awesome
 
 Using HTTPS in Angular
+
+Password Storing:
+- Add PasswordHash and PasswordSalt byte[] in AppUser class.
+
+To add these new properties in database, use following migration commands to update database:
+- dotnet ef migrations add UserPasswordAdded
+- dotnet ef update database                 -- To update database
+
+Inheritance:
+When we inherit from another C# class, we get all it attributes, methods and properties available 
+in the class from which it is inherited.
+We created BaseApiController.cs controller and added 
+- [ApiController]
+- [Route("api/[controller]")]
+in it. In UsersController.cs, we are not inheriting ControllerBase class but our newly created class named BaseApiController.
+With this we don't need to add [ApiController] and [Route("api/[controller]")] in all our controllers.
+
+DTOs:
+--------
+Purpose:
+- In case we get result and as AppUser class contains password information, we can't send full class to the front end.
+So we use DTO to hide certain properties and send that DTO to front end.
+- Flaten objects inside our code if we have nested objects
+- Relationship between classes
+- To receive properties inside our route through body.
+
+Validations should be implemented in DTOs.
+
+CREATE TOKEN:
+-----------------
+- From nuget gallery, install "System.IdentityModel.Tokens.Jwt", "Microsoft.AspNetCore.Authentication.JwtBearer" into the project.
+- Create and interface named "ITokenService" and declare a string property "CreateToken" which will return AppUser Object.
+- Create a class named "TokenService.cs" and generate a constructor. Using "SymmetricSecurityKey" class (required 
+to specify that same key will be used for encrtyption and decryption), fetch the key from appsettings.Development.json file.
+- We need to define the function which was created in interface named "CreateToken" and we will pass AppUser as input parameter.
+- In this function, we need to specify list of claims. We need to specify the key-value pair with which we will pass the required
+data. Eg. "JwtRegisteredClaimNames.NameId" is key through which we can get the Username(user.UserName).
+- Next, we need to encrypt the token with a signature.  To do that we need to specify the algorithm. so in following line of code, 
+we are encrypting the key with HmacSha512 algo. 
+var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+- In the next line of code, we are specifying token descriptor and providing details of token such as claims, expiry time and 
+signing credentials.
+var tokenDescriptor = new SecurityTokenDescriptor
+{
+    Subject = new ClaimsIdentity(claims),
+    Expires = DateTime.Now.AddDays(7),
+    SigningCredentials = creds
+};
+- Next we create an object of JwtSecurityTokenHandler class. 
+- Using CreateToken method of JwtSecurityTokenHandler class, we pass the tokenDescriptor object and it provides us 
+the generated token.
+- Using WriteToken method, the token is sent back.
+
+VALIDATE TOKEN:
+--------------
+- As we need to authenticate the token coming from client application, we need to add code in startup.cs as middleware.
+- In startup.cs file, under ConfigureServices method, we write following line of code.
+services.AddScoped<ITokenService, TokenService>();
+This specifies that the scope of token which is being passed is to be maintained only until it is being used.
+and we input ITokenService, TokenService.
+- As we are using JWT Bearer for generating token, we need to write following line of code. 
+ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+In this, we are specifying to add authentication of JWTBearer type with following options:
+            - ValidateIssuerSigningKey
+            - IssuerSigningKey
+            - ValidateIssuer
+            - ValidateAudience
+
+- To tell the project that Authentication needs to be performed, in "Configure" method, under app.UseCors, write following
+code: 
+    app.UseAuthorization();
+    Please note it must come after app.UseCors and before app.UseAuthorization();
+
+- In controllers, add [Authorize] above each route which needs to be authenticated.
+--------------------------------------------------------------------------------------
+
+Extension Methods: Enable us to add methods to existing types without creating or modifying original types.
+We create folder named "Extensions" and 2 classes named ApplicationServiceExtensions.cs and IdentityServiceExtensions.cs

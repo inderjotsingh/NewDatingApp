@@ -5,12 +5,13 @@ using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]  // Client needs to specify api/Users/<method name>
-    public class UsersController : ControllerBase
+    // [ApiController]
+    // [Route("api/[controller]")]  // Client needs to specify api/Users/<method name>
+    public class UsersController : BaseApiController // ControllerBase
     {
         private readonly DataContext _context;
         public UsersController(DataContext context)
@@ -28,6 +29,7 @@ namespace API.Controllers
         // }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
             // Asynchronous Code. Better Approach
@@ -36,6 +38,7 @@ namespace API.Controllers
 
         // api/user/3
         // To get particular User
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUser>> GetUser(int id)
         {
