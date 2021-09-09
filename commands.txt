@@ -186,3 +186,69 @@ code:
 
 Extension Methods: Enable us to add methods to existing types without creating or modifying original types.
 We create folder named "Extensions" and 2 classes named ApplicationServiceExtensions.cs and IdentityServiceExtensions.cs
+Move code to these files from startup.cs file
+
+---------------------------------------END OF SECTION 4-----------------------------------
+
+ANGUALR SECTION:
+----------------
+To create a component/services without .spec file, use following command:
+- ng g c <component_name> --skip-tests
+- ng g s <service_name>  --skip-tests
+
+SERVICES:
+----------
+@Injectable: This service can be injected into other component/services in our application. 
+        providedIn: 'root' = We don't need to put the service in app.module->providers section. In older version of angular,
+        we were required to specify services in this section.
+
+Observables: 
+-------------
+It does not do until we subscribes. New standards for managing async data included in ES7. Introduced in Angular v2.
+You can think of observables like a newsletter:
+    - Only subscribers of newsletter receives the newsletter.
+    - If no-one subscribes to the newsletter, it probably will not be printed.
+
+Promises Vs Observables:
+Promises: Provides a single future value. It waits until the response is received.
+Observables: Emits multiple values over time.
+
+Promises: Not Lazy
+Observables: Lazy
+
+Promises: Can not cancel
+Observables: Able to cancel
+
+Observables: can use with map, filter, reduce and other operators.
+
+To transform the data received from the Http request, we can use RxJS's pipe.
+Eg: 
+getMembers() {
+    return this.http.get('api/users').pipe(
+        map(members => {
+            console.log(member.id);
+            return member.id
+        })
+    )
+}
+
+There are 3 parts of Observables:
+- subscribes
+- error eg: error => {}
+- On Completion eg: () => {}
+
+Async Pipe:
+<li *ngFor='let member of service.getMembers() | async'>{{member.username}}</li>
+Async Pipe automatically subscribes/unsubscribes from the observables
+
+
+BsDropdownModule.forRoot() (app.module) :  it got some services or components that it needs to initialize along with root module.
+
+Passing Data from Parent to Child:
+- In clild component, we use @Input that will receive data from Parent component.
+- To pass data, in Parent Component HTML, we use (square brackets) [@InputNameFromChildComponent].
+
+Passing Data from Clild to Parent:
+- We can pass data from Child component that will change the property of Parent component.
+- In child component, we use @Output that will pass data to Parent component. It is an event emitter.
+- To received data, in Parent component HTML, we use (simple brackets) (@OutputNameFromChildComponent)
