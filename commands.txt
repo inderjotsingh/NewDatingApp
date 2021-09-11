@@ -248,7 +248,23 @@ Passing Data from Parent to Child:
 - In clild component, we use @Input that will receive data from Parent component.
 - To pass data, in Parent Component HTML, we use (square brackets) [@InputNameFromChildComponent].
 
-Passing Data from Clild to Parent:
+Passing Data from Child to Parent:
 - We can pass data from Child component that will change the property of Parent component.
 - In child component, we use @Output that will pass data to Parent component. It is an event emitter.
 - To received data, in Parent component HTML, we use (simple brackets) (@OutputNameFromChildComponent)
+
+
+AUTH GUARDS:
+To prevent a protected route from being accessed, we can use Guards:
+- To a auth guard, execute following command in "_guards" folder
+        - ng g guard auth --skip-tests
+We can have multiple auth Guards
+We can use "runGuardsAndResolvers" in app-routing file to map all children component within auth guard.
+
+To Add Bootswatch these:
+- Install Bootswatch using : npm i bootswatch
+- Apply styles in angular.json file
+
+To store imported modules in separate file, create new folder named "modules" and create a module (shared) file inside 
+this folder using following command:
+- ng g m shared --flat
