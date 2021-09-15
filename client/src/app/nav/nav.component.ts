@@ -32,9 +32,6 @@ export class NavComponent implements OnInit {
       this.toastr.success('Login Successful');
       this.router.navigate(['/messages']);
       // this.loggedIn = true;
-    }, (error) => {
-      console.log(error)
-      this.toastr.error(error.error)
     })
   }
 

@@ -178,7 +178,7 @@ In this, we are specifying to add authentication of JWTBearer type with followin
 
 - To tell the project that Authentication needs to be performed, in "Configure" method, under app.UseCors, write following
 code: 
-    app.UseAuthorization();
+    app.UseAuthentication();
     Please note it must come after app.UseCors and before app.UseAuthorization();
 
 - In controllers, add [Authorize] above each route which needs to be authenticated.
@@ -268,3 +268,53 @@ To Add Bootswatch these:
 To store imported modules in separate file, create new folder named "modules" and create a module (shared) file inside 
 this folder using following command:
 - ng g m shared --flat
+
+ERROR HANDLING : DOTNET CORE
+-------------------------------------
+- Create a controller named "BuggyController" and create endpoints for "authentication" error, "not-found",
+"server-error" and "bad-request" for testing purpose.
+- Each endpoint is used for sending different errors.
+- Create a new folder named "Errors" and generate a class named "ApiException". This class contains properties 
+which we need to send to the client (angular). It has statuscode, message and details properties.
+- Generally we use Try-Catch to handle any error. In olden days, we used to write Try-Catch in all our end-points.
+- To handle Try-Catch globally, we can create a middleware. 
+- Create a new folder "Middleware" and generate a class named "ExceptionMiddleware".
+- In this file, we create a constructor and pass 3 parameters: 
+        - Request Delegate: What's coming next in the pipeline.
+        - ILogger: For logging 
+        - IHostEnvironment: To check environment: development / production
+- Each middleware must have an endpoint "Invoke" or "InvokeAsync". 
+- In "try" block, we can use Request Delegate to send the control to next line of code in case no error is found.
+- In "catch" block, we log the error (to show in terminal). pass in the content-type and status code of 500 using 
+"HttpStatusCode.InternalServerError".
+- In "response" variable, Using Tertiary operator, In case we are in development mode, we need to check the details of error, so using "ApiException"
+class, we pass 3 parameters: StatusCode, Message and stacktrace.
+- In case, we are in production mode, we don't show stacktrace, and simply pass "Internal Server Error".
+- We will pass this as JSON. We can give Policy to JsonSerializer. eg here we have given "JsonNamingPolicy.CamelCase".
+- We serialize the "response".
+- Serialized response ("json") will be send back using "await context.Response.WriteAsync(json);" 
+- In startup class, using "app.UseMiddleware<ExceptionMiddleware>();" we can implment Error Handling in .Net Core.
+
+ERROR HANDLING : ANGULAR
+-------------------------------------
+ - Create a new folder named "Errors" and generate a component 
+
+ ERROE INTERCEPTOR : ANGULAR
+ ---------------------------
+ - To create an error interceptor, use following command:
+        - ng g interceptor error --skip-tests
+- Using interceptor, we can intercept the request that goes out or the response that we receive.
+- As intercept method returns an observable, we can use "pipe". In pipe method, we can use RxJS's "catchError" 
+method. 
+- We can check if we got an error. In case error is received, using switch case, we can handle different types of 
+error.
+- Error 400 (bad request) is a special type of error as it can be obtained with validation error or other errors.
+- In case we receive validation error, we will get an array of validation errors. In case we receive an array, 
+we can push these error in "modalStateErrors" array and send this array to front end.
+- In other cases (400 (without array) and 401), we are simply showing on the screen.
+- For error 404 and 500, we can send to diffent pages (components).
+- In app.module, under "providers" section, we need to declare this interceptor.
+        - {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+    We are passing HTTP Interceptor, provide "ErrorInterceptor" and multi: true (as angular has its own interceptors, 
+    we are adding a new one and not replacing its own interceptor.)
+    We can specify multiple interceptors here.
